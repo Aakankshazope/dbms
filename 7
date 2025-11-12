@@ -1,0 +1,46 @@
+CREATE DATABASE empdb; 
+USE empdb; 
+CREATE TABLE Employees ( 
+emp_id INT PRIMARY KEY, 
+name VARCHAR(30), 
+salary DECIMAL(10,2) 
+); 
+CREATE TABLE Emp_Audit ( 
+action_type VARCHAR(20), 
+emp_id INT, 
+old_salary DECIMAL(10,2), 
+new_salary DECIMAL(10,2) 
+); 
+DELIMITER // 
+CREATE TRIGGER before_emp_row 
+BEFORE INSERT ON Employees 
+FOR EACH ROW 
+BEGIN 
+IF NEW.salary < 10000 THEN 
+SET NEW.salary = 10000; 
+END IF; 
+SET NEW.salary = NEW.salary + 2000; 
+END; 
+// 
+CREATE TRIGGER after_emp_insert 
+AFTER INSERT ON Employees 
+FOR EACH ROW 
+BEGIN 
+INSERT INTO Emp_Audit(action_type, emp_id, old_salary, new_salary) 
+VALUES('INSERT', NEW.emp_id, 5000, NEW.salary); 
+END; 
+// 
+CREATE TRIGGER after_emp_update 
+AFTER UPDATE ON Employees 
+FOR EACH ROW 
+BEGIN 
+INSERT INTO Emp_Audit(action_type, emp_id, old_salary, new_salary) 
+VALUES('UPDATE', NEW.emp_id, OLD.salary, NEW.salary + 2000); 
+END; 
+// 
+DELIMITER ; 
+INSERT INTO Employees VALUES (1, 'Amit', 8000); 
+INSERT INTO Employees VALUES (2, 'Riya', 15000); 
+UPDATE Employees SET salary = 20000 WHERE emp_id = 1; 
+SELECT * FROM Employees; 
+SELECT * FROM Emp_Audit; 
