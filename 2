@@ -1,0 +1,19 @@
+CREATE DATABASE company; 
+USE company; 
+CREATE TABLE employee ( 
+emp_id INT PRIMARY KEY, 
+emp_name VARCHAR(50), 
+designation VARCHAR(50), 
+salary DECIMAL(10,2) 
+); 
+INSERT INTO employee VALUES 
+(101, 'Amit', 'Manager', 60000), 
+(102, 'Riya', 'Developer', 45000), 
+(103, 'Suresh', 'Tester', 40000), 
+(104, 'Neha', 'Developer', 45000), 
+(105, 'Vikram', 'HR', 50000); 
+SELECT * FROM employee; 
+SELECT DISTINCT salary FROM employee; 
+SELECT * FROM employee ORDER BY salary ASC; 
+UPDATE employee SET emp_id = 110 WHERE emp_id = 103; 
+DELETE FROM employee WHERE emp_id = 104;
