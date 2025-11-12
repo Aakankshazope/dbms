@@ -1,0 +1,30 @@
+use StudentDB 
+db.Students.insertMany([ 
+{ _id: 1, name: "Amit", age: 20, marks: 80, city: "Mumbai" }, 
+{ _id: 2, name: "Riya", age: 22, marks: 92, city: "Delhi" }, 
+{ _id: 3, name: "Raj", age: 21, marks: 76, city: "Mumbai" }, 
+{ _id: 4, name: "Sneha", age: 23, marks: 88, city: "Delhi" }, 
+{ _id: 5, name: "Anil", age: 22, marks: 90, city: "Pune" } 
+]) 
+print("All Students:") 
+printjson(db.Students.find().toArray()) 
+print("Average Marks by City:") 
+printjson( 
+db.Students.aggregate([ 
+{ $group: { _id: "$city", avgMarks: { $avg: "$marks" } } } 
+]).toArray() 
+) 
+print("Students with Marks > 80 (Sorted):") 
+printjson( 
+db.Students.aggregate([ 
+{ $match: { marks: { $gt: 80 } } }, 
+{ $sort: { marks: -1 } }, 
+{ $project: { _id: 0, name: 1, marks: 1 } } 
+]).toArray() 
+) 
+print("Creating Index on marks field:") 
+printjson(db.Students.createIndex({ marks: 1 })) 
+print("Indexes Present:") 
+printjson(db.Students.getIndexes()) 
+print("Execution Stats for Query (marks > 85):") 
+printjson(db.Students.find({ marks: { $gt: 85 } }).toArray()) 
