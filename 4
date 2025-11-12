@@ -1,0 +1,32 @@
+CREATE DATABASE demo; 
+USE demo; 
+DELIMITER // 
+CREATE PROCEDURE fact(IN v_num INT) 
+BEGIN 
+DECLARE v_counter INT DEFAULT 1; 
+DECLARE v_factorial INT DEFAULT 1; 
+DECLARE err_msg VARCHAR(255); 
+DECLARE EXIT HANDLER FOR SQLEXCEPTION  
+BEGIN 
+SET err_msg = 'An unexpected SQL error occurred!'; 
+SELECT err_msg AS Error; 
+END; 
+IF v_num < 0 THEN 
+SET err_msg = 'Error: Negative numbers are not allowed!'; 
+SELECT err_msg AS Error; 
+ELSE 
+WHILE v_counter <= v_num DO 
+SET v_factorial = v_factorial * v_counter; 
+SET v_counter = v_counter + 1; 
+END WHILE; 
+IF v_factorial > 100 THEN 
+SELECT CONCAT('The factorial of ', v_num, ' is ', v_factorial, ' (greater than 100)') AS 
+Result; 
+ELSE 
+SELECT CONCAT('The factorial of ', v_num, ' is ', v_factorial) AS Result; 
+END IF; 
+END IF; 
+END // 
+DELIMITER ; 
+CALL fact(5); 
+CALL fact(-3); 
